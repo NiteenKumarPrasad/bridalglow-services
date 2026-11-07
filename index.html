@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BridalGlow - Bridal Services Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="logo.png" alt="Bridal Glow Logo" class="navbar-logo">
+            </div>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#artists">Artists</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><button id="darkModeToggle" class="icon-btn" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button></li>
+                
+                <!-- Authentication Status -->
+                <li class="auth-section">
+                    <button class="btn-login" id="loginNavBtn">Login / Register</button>
+                    
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <img src="https://ui-avatars.com/api/?name=User&background=E85D7A&color=fff" alt="Profile" class="user-avatar" id="navAvatar">
+                        <div class="dropdown-menu" id="userDropdown">
+                            <a href="#dashboard" onclick="switchTab('tab-bookings')"><i class="fas fa-calendar-check"></i> My Bookings</a>
+                            <a href="#dashboard" onclick="switchTab('tab-favorites')"><i class="fas fa-heart"></i> Wishlist</a>
+                            <a href="#dashboard" onclick="switchTab('tab-profile')"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                            <hr>
+                            <a href="#" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Your Dream Wedding Look Starts Here</h1>
+            <p>Connect with top-rated bridal makeup artists, mehndi designers, photographers, and stylists.</p>
+            <div class="hero-buttons">
+                <a href="#artists" class="btn btn-primary">Find Artists</a>
+                <a href="#booking" class="btn btn-secondary">Book an Appointment</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Categories -->
+    <section class="services-section" id="services">
+        <div class="section-title">
+            <h2>Our Bridal Services</h2>
+            <p>Everything you need for your special wedding day</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card" onclick="setCategoryFilter('Makeup')">
+                <i class="fas fa-magic"></i>
+                <h3>💄 Makeup & Cosmetics</h3>
+                <p>Bridal, Party, Airbrush, HD Makeup</p>
+            </div>
+            <div class="service-card" onclick="setCategoryFilter('Mehndi')">
+                <i class="fas fa-hand-sparkles"></i>
+                <h3>🎨 Mehndi & Art</h3>
+                <p>Bridal, Arabic, Indian, Glitter Mehndi</p>
+            </div>
+            <div class="service-card" onclick="setCategoryFilter('Photography')">
+                <i class="fas fa-camera-retro"></i>
+                <h3>📸 Photography</h3>
+                <p>Pre-wedding, Wedding, Candid, Video</p>
+            </div>
+            <div class="service-card" onclick="setCategoryFilter('Bridal Wear')">
+                <i class="fas fa-female"></i>
+                <h3>👗 Bridal Wear & Styling</h3>
+                <p>Lehengas, Accessories, Hairstyling, Draping</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artists Listing & Advanced Filters -->
+    <section class="artists-section" id="artists">
+        <div class="section-title">
+            <h2>Featured Wedding Artists</h2>
+            <p>Browse verified professionals, filter by your needs, and save your favorites</p>
+        </div>
+
+        <div class="advanced-filters">
+            <select id="filterCategory">
+                <option value="All">All Categories</option>
+                <option value="Makeup">Makeup & Cosmetics</option>
+                <option value="Mehndi">Mehndi & Art</option>
+                <option value="Photography">Photography</option>
+                <option value="Bridal Wear">Bridal Wear & Styling</option>
+                <option value="Hair Styling">Hair Styling</option>
+                <option value="Skincare">Skincare</option>
+            </select>
+            <select id="filterLocation">
+                <option value="All">All Locations</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Jaipur">Jaipur</option>
+                <option value="Chennai">Chennai</option>
+            </select>
+            <select id="filterRating">
+                <option value="0">Any Rating</option>
+                <option value="4.5">4.5 & Above</option>
+                <option value="4.8">4.8 & Above</option>
+            </select>
+            <select id="filterPrice">
+                <option value="All">Any Price</option>
+                <option value="Low">Budget (Under ₹15,000)</option>
+                <option value="High">Premium (₹15,000+)</option>
+            </select>
+            <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+        </div>
+
+        <div class="artists-grid" id="artistsGrid"></div>
+    </section>
+
+    <!-- Artist Details Modal -->
+    <div class="modal" id="artistModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('artistModal').style.display='none'">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Bridal Inspiration Gallery -->
+    <section class="portfolio-section" id="portfolio">
+        <div class="section-title">
+            <h2>Bridal Inspiration Gallery</h2>
+            <p>Real glimpses of bride transformations and wedding shoots</p>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1702378154233-9b870ff8f1b3?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Bridal Mehndi">
+                <div class="portfolio-tag">Bridal Mehndi</div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://i.pinimg.com/736x/c0/c1/04/c0c104f32ae1d9bb0e5b19cd6fe03bc5.jpg" alt="Bridal Makeup">
+                <div class="portfolio-tag">Bridal Makeup</div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://i.pinimg.com/736x/31/c5/c1/31c5c15e12f01542b76e24a977dc44f3.jpg" alt="Wedding Photography">
+                <div class="portfolio-tag">Wedding Moments</div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://i.pinimg.com/736x/10/04/c3/1004c34c71b9a59651e4281237b04937.jpg" alt="Bridal Wear">
+                <div class="portfolio-tag">Bridal Attire</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking System -->
+    <section class="booking-section" id="booking">
+        <div class="section-title">
+            <h2>Book an Appointment</h2>
+            <p>Reserve your artist, package, and date</p>
+        </div>
+
+        <div class="booking-container">
+            <form id="bookingForm" class="booking-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientName">Your Full Name</label>
+                        <input type="text" id="clientName" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientPhone">Phone Number</label>
+                        <input type="tel" id="clientPhone" placeholder="10-digit number" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="artistSelect">Select Artist / Provider</label>
+                        <select id="artistSelect" required>
+                            <option value="">-- Choose an Artist --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageSelect">Service Package</label>
+                        <select id="packageSelect" required>
+                            <option value="Standard">Standard Package</option>
+                            <option value="Premium">Premium Package</option>
+                            <option value="Luxury">Luxury Signature Package</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookingService">Select Specific Service Type</label>
+                    <select id="bookingService" required>
+                        <option value="">-- Choose Exact Service --</option>
+                        <optgroup label="💄 Makeup & Cosmetics">
+                            <option value="Bridal Makeup">Bridal Makeup</option>
+                            <option value="Party Makeup">Party Makeup</option>
+                            <option value="Airbrush Makeup">Airbrush Makeup</option>
+                            <option value="HD Makeup">HD Makeup</option>
+                        </optgroup>
+                        <optgroup label="🎨 Mehndi & Art">
+                            <option value="Bridal Mehndi">Bridal Mehndi</option>
+                            <option value="Arabic Mehndi">Arabic Mehndi</option>
+                            <option value="Indian Mehndi">Indian Mehndi</option>
+                            <option value="Glitter Mehndi">Glitter Mehndi</option>
+                        </optgroup>
+                        <optgroup label="📸 Photography">
+                            <option value="Pre-wedding Shoot">Pre-wedding Shoot</option>
+                            <option value="Wedding Photography">Wedding Photography</option>
+                            <option value="Candid Photography">Candid Photography</option>
+                            <option value="Video Coverage">Video Coverage</option>
+                        </optgroup>
+                        <optgroup label="👗 Bridal Wear & Styling">
+                            <option value="Lehengas & Sarees">Lehengas & Sarees</option>
+                            <option value="Bridal Accessories">Bridal Accessories</option>
+                            <option value="Hairstyling">Hairstyling</option>
+                            <option value="Draping">Draping</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingDate">Event Date</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingTime">Preferred Time</label>
+                        <input type="time" id="bookingTime" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Confirm Appointment</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Client Reviews Section -->
+    <section class="reviews-section" id="reviews">
+        <div class="section-title">
+            <h2>What Brides Say</h2>
+        </div>
+        <div class="reviews-grid" id="reviewsGrid"></div>
+    </section>
+
+    <!-- User Dashboard Section -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="section-title">
+            <h2>User Dashboard</h2>
+            <p>Manage bookings, favorites, and profile</p>
+        </div>
+
+        <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+            <div class="dashboard-tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-bookings')">My Bookings</button>
+                <button class="tab-btn" onclick="switchTab('tab-favorites')">Wishlist</button>
+                <button class="tab-btn" onclick="switchTab('tab-profile')">Profile Settings</button>
+            </div>
+
+            <!-- Tab 1: Bookings -->
+            <div class="tab-content active" id="tab-bookings">
+                <h3>Confirmed Appointments</h3>
+                <div id="bookingList"></div>
+            </div>
+
+            <!-- Tab 2: Favorites/Wishlist -->
+            <div class="tab-content" id="tab-favorites">
+                <h3>Your Favorite Artists</h3>
+                <div id="favoritesList" class="artists-grid"></div>
+            </div>
+
+            <!-- Tab 3: Profile Management -->
+            <div class="tab-content" id="tab-profile">
+                <div class="profile-section">
+                    <h3>Update Profile Details</h3>
+                    <form id="profileForm" class="booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="profName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="profEmail" readonly title="Email cannot be changed">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="number" id="profAge" placeholder="e.g. 24">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="profPhone" placeholder="10-digit number">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Details</button>
+                    </form>
+                </div>
+                
+                <hr class="section-divider">
+                
+                <div class="profile-section">
+                    <h3>Change Password</h3>
+                    <form id="passwordForm" class="booking-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="currPassword" required placeholder="Current password">
+                                    <i class="fas fa-eye-slash password-toggle-btn" onclick="togglePasswordVisibility('currPassword', this)"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="newPassword" required placeholder="New password">
+                                    <i class="fas fa-eye-slash password-toggle-btn" onclick="togglePasswordVisibility('newPassword', this)"></i>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="confPassword" required placeholder="Repeat new password">
+                                    <i class="fas fa-eye-slash password-toggle-btn" onclick="togglePasswordVisibility('confPassword', this)"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Update Password</button>
+                    </form>
+                </div>
+
+                <hr class="section-divider">
+                
+                <div class="profile-section danger-zone">
+                    <h3 style="color: #e74c3c;">Danger Zone</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Deleting your account permanently clears your profile, saved wishlist, and active bookings.</p>
+                    <button class="btn btn-danger" onclick="deleteAccount()">Delete My Account</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="dashboardLoginPrompt" style="text-align: center; padding: 3rem;">
+            <p>Please login or register to view your dashboard, bookings, and wishlist.</p>
+            <button class="btn btn-primary" style="margin-top: 1rem;" onclick="document.getElementById('authModal').style.display='flex'">Login / Register</button>
+        </div>
+    </section>
+
+    <!-- Authentication Modal (Login / Register Tabs) -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-modal">
+            <span class="close-btn" onclick="document.getElementById('authModal').style.display='none'">&times;</span>
+            <div class="auth-box">
+                <div class="auth-tabs-header">
+                    <button class="auth-tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">Login</button>
+                    <button class="auth-tab-btn" id="tabRegBtn" onclick="switchAuthTab('register')">Register</button>
+                </div>
+                
+                <!-- Sign In Form -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" required placeholder="bride@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="loginPassword" required placeholder="Enter password">
+                            <i class="fas fa-eye-slash password-toggle-btn" onclick="togglePasswordVisibility('loginPassword', this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </form>
+
+                <!-- Registration Form -->
+                <form id="registerForm" style="display: none;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="regName" required placeholder="Your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="regEmail" required placeholder="your.email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="regPassword" required placeholder="Create a password">
+                            <i class="fas fa-eye-slash password-toggle-btn" onclick="togglePasswordVisibility('regPassword', this)"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 BridalGlow. Free Web Development Internship Online Task.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
